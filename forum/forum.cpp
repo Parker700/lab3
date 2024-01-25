@@ -56,8 +56,14 @@ namespace forum{
     void Member::banned(){
         status = 3;
     }
+    void Member::changesection(std::string sname){
+        section = sname;
+    }
     std::string Member::getlogin() const{
         return login;
+    }
+    std::string& Member::getsection(){
+        return section;
     }
     Member& Member::operator= (const Member& mem)= default;
 
@@ -81,7 +87,7 @@ namespace forum{
         mind = random(1, 10);
     }
     std::string Moderator::getlogin(){
-        return member.getlogin();
+        return getmember().getlogin();
     }
     Member& Moderator::getmember(){
         return member;
@@ -91,6 +97,11 @@ namespace forum{
     }
     void Moderator::setbanned(){
         member.banned();
+    }
+    Moderator& Moderator::operator= (const Moderator& mem){
+        Moderator mod(mem.member);
+        mod.setmind(mem.mind);
+        return mod;
     }
     std::ostream& operator<< (std::ostream& o, Moderator& moderator){
         o << moderator.member;
@@ -113,6 +124,12 @@ namespace forum{
     std::string Troll::getlogin(){
         return member.getlogin();
     }
+    Troll& Troll::operator= (const Troll& troll){
+        Troll trol(troll.member);
+        trol.thickness = troll.thickness;
+        trol.banned = troll.banned;
+        return trol;
+    }
     std::ostream& operator<< (std::ostream& o, Troll& troll){
         o << troll.member;
         o << "Thickness: " << troll.thickness;
@@ -132,11 +149,71 @@ namespace forum{
     void Section::addmember(Member& mem){
         Members.push_back(mem);
     }
+    void Section::addmoderator(Moderator& mod){
+        Moderators.push_back(mod);
+    }
+    void Section::addtroll(Troll& troll){
+        Trolls.push_back(troll);
+    }
+    void Section::delmember(std::string name){
+        for(int i = 0; i < Members.size(); i++){
+            if(name == Members.at(i).getlogin()){
+                Members.erase(Members.begin() + i, Members.begin() + i + 1);
+            }
+        }
+    }
+    void Section::delmod(std::string name){
+        for(int i = 0; i < Moderators.size(); i++){
+            if (name == Moderators.at(i).getlogin()) {
+                Moderators.erase(Moderators.begin() + i, Moderators.begin() + i + 1);
+            }
+        }
+    }
+    void Section::deltroll(std::string name){
+        for(int i = 0; i < Trolls.size(); i++){
+            if (name == Trolls.at(i).getlogin()) {
+                Trolls.erase(Trolls.begin() + i, Trolls.begin() + i + 1);
+            }
+        }
+    }
     std::ostream& operator<< (std::ostream& o, Section& section){
-        o << "Section name: " << section.getname();
-
+        o << "Show Section:\nSection name: " << section.getname() << "\nUsers: ";
+        for(int i = 0; i < section.Members.size(); i ++){
+            o << i + 1 << ") " << section.Members.at(i).getlogin() << "; ";
+        }
+        std:: cout << std::endl << "Moderators: ";
+        for(int i = 0; i < section.Moderators.size(); i ++){
+            o << i + 1 << ") " << section.Moderators.at(i).getlogin() << "; ";
+        }
+        std:: cout << std::endl << "Trolls: ";
+        for(int i = 0; i < section.Trolls.size(); i ++){
+            o << i + 1 << ") " << section.Trolls.at(i).getlogin() << "; ";
+        }
         o << "\n";
         return o;
+    }
+    bool Section::istherename(std::string str){\
+    bool b = false;
+        for(int i = 0; i < Members.size(); i++){
+            if (name == Members.at(i).getlogin()) {
+               b = true;
+            }
+        }
+        for(int i = 0; i < Moderators.size(); i++){
+            if (name == Moderators.at(i).getlogin()) {
+                b = true;
+            }
+        }
+        for(int i = 0; i < Trolls.size(); i++){
+            if (name == Trolls.at(i).getlogin()) {
+                b = true;
+            }
+        }
+        return b;
+    }
+    void Section::makemoder(Member& mem){
+        Moderator mod(mem);
+        Moderators.push_back(mod);
     }
 /*    void Section::addmoderator(Moderator& mod){
         Moderators.push_back(mod);
@@ -144,8 +221,6 @@ namespace forum{
     void Section::addtroll(Troll& troll){
         Trolls.push_back(troll);
     }*/
-
-
 
 
 
@@ -177,6 +252,16 @@ namespace forum{
         }
         std::cout << std::endl;
     }
+    bool Forum::istherename(std::string str){
+        bool b = false;
+        for(int i = 0; i < Members.size(); i++){
+            if (str == Members.at(i).getlogin()) {
+                b = true;
+            }
+        }
+        return b;
+    }
+
 
     Member& TrollMem(Troll& troll){
         return troll.getmember();
