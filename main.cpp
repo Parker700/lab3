@@ -19,8 +19,8 @@ int main(){
         int sind;
         int p;//for member, mod or troll
         int a = 1;//for little loop
-        std::string sname;
-        std::string name;
+        std::string sname;//name for section
+        std::string name;//name for user
         while (true) {
             std::cout << "\n____________________________________\n";
             std::cout << "1. Show sections    2. Go to section\n"
@@ -50,7 +50,7 @@ int main(){
                                           << "3. Result of model processes  4. The most successful troll\n"
                                           << "5. Make member                6. Make moderator\n"
                                           << "7. Make troll                 8. Replace user\n"
-                                          << "9. Exit\n"
+                                          << "9. Change status of user      0. Exit\n"
                                           << "__________________________________________________________" << std::endl;
                                 command = getvalue(1, 9);
                                 switch(command){
@@ -207,7 +207,99 @@ int main(){
                                         break;
                                     }
                                     case 9: {
+                                        std::cout << "Do you want to change 1.status, 2.mind or 3.thickness: ";
+                                        x = getvalue(1, 3);
+                                        switch(x){
+                                            case 1: {
+                                                std::cout << "\nYou want to change for 1.Member, 2.Moderator or 3.Troll: ";
+                                                y = getvalue(1, 3);
+                                                switch(y){
+                                                    case 1: {
+                                                        if(!forum.getsections().at(sind-1).getmembers().empty()) {
+                                                            int s;
+                                                            std::cout << "Enter an index for member: ";
+                                                            w = getvalue(1, forum.getsections().at(
+                                                                    sind - 1).getmembers().size());
+                                                            std::cout
+                                                                    << "Enter a status 1.online, 2.offline or 3.banned: ";
+                                                            s = getvalue(1, 3);
+                                                            forum.getsections().at(sind - 1).getmembers().at(
+                                                                    w - 1).setstatus(s);
+                                                        }else{
+                                                            std::cout << "OOps, there is nothing, sorry" << std::endl;
+                                                        }
+                                                        break;
+                                                    }
+                                                    case 2: {
+                                                        if(!forum.getsections().at(sind-1).getmoderators().empty()) {
+                                                            int s;
+                                                            std::cout << "Enter an index for moderator: ";
+                                                            w = getvalue(1, forum.getsections().at(
+                                                                    sind - 1).getmoderators().size());
+                                                            std::cout
+                                                                    << "Enter a status 1.online, 2.offline or 3.banned: ";
+                                                            s = getvalue(1, 3);
+                                                            forum.getsections().at(sind - 1).getmoderators().at(
+                                                                    w - 1).setstatus(s);
+                                                        }else{
+                                                            std::cout << "OOps, there is nothing, sorry" << std::endl;
+                                                        }
+                                                        break;
+                                                    }
+                                                    case 3: {
+                                                        if(!forum.getsections().at(sind-1).gettrolls().empty()) {
+                                                            int s;
+                                                            std::cout << "Enter an index for troll: ";
+                                                            w = getvalue(1, forum.getsections().at(
+                                                                    sind - 1).gettrolls().size());
+                                                            std::cout
+                                                                    << "Enter a status 1.online, 2.offline or 3.banned: ";
+                                                            s = getvalue(1, 3);
+                                                            forum.getsections().at(sind - 1).gettrolls().at(
+                                                                    w - 1).setstatus(s);
+                                                        }else{
+                                                            std::cout << "OOps, there is nothing, sorry" << std::endl;
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            }case 2: {
+                                                if(!forum.getsections().at(sind-1).getmoderators().empty()) {
+                                                    int m;
+                                                    std::cout << "Enter a number of mind for moderator: ";
+                                                    m = getvalue(1, 10);
+                                                    std::cout << "Enter an index of moderator: ";
+                                                    int i = getvalue(1, forum.getsections().at(
+                                                            sind - 1).getmoderators().size());
+                                                    forum.getsections().at(sind - 1).getmoderators().at(i - 1).setmind(
+                                                            m);
+                                                }else{
+                                                    std::cout << "There is no moderator, sorry" << std::endl;
+                                                }
+                                                break;
+                                            }
+                                            case 3: {
+                                                if(!forum.getsections().at(sind-1).gettrolls().empty()) {
+                                                    float th;
+                                                    std::cout << "\nEnter a denominator: ";
+                                                    y = getvalue(1, 10);
+                                                    th = 1 / (float) y;
+                                                    std::cout << "\nEnter an index of troll: ";
+                                                    int i = getvalue(1, forum.getsections().at(
+                                                            sind - 1).gettrolls().size());
+                                                    forum.getsections().at(sind - 1).gettrolls().at(i - 1).setthick(th);
+                                                }else{
+                                                    std::cout << "There is no troll, sorry" << std::endl;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case 0: {
                                         a = 0;
+                                        break;
                                     }
                                 }
                             }
