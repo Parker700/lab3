@@ -84,7 +84,7 @@ namespace forum {
         status = stat;
     }
     void Member::setmessages(int mess){
-        messages = mess;
+        messages += mess;
     }
 
     //operators
@@ -102,8 +102,6 @@ namespace forum {
         o << ";\nMessages: " << member.messages << std::endl;
         return o;
     }
-    //    Member& Member::operator= (const Member& mem)= default;
-
 
 
     //Moderator
@@ -203,13 +201,6 @@ namespace forum {
         o << "\nBanned users: " << troll.banned << std::endl;
         return o;
     }
-    /*Troll& Troll::operator= (const Troll& troll){
-        Troll trol(troll.member);
-        trol.thickness = troll.thickness;
-        trol.banned = troll.banned;
-        return trol;
-    }*/
-
 
 
 
@@ -234,7 +225,8 @@ namespace forum {
                 thick += (1 / Trolls.at(i).getthick());
             }
         }
-
+        std::cout << mind << " - " << thick << "\n";
+        std::cout << "Banned: ";
         int w = 0;//trolls online
         for(int i = 0; i < Trolls.size(); i++){
             if(Trolls.at(i).getstatus() == 1){
@@ -243,82 +235,103 @@ namespace forum {
         }
         if((float)mind > thick){
             if(w == 1) {//was !Trolls.empty()
-                Trolls.at(random(0, Trolls.size() - 1)).setstatus(3);
+                int u = random(0, Trolls.size() - 1);
+                Trolls.at(u).setstatus(3);
+                std::cout << Trolls.at(u).getlogin();
             }
         }else{
-            if(!Trolls.empty()) {
+            if(w == 1) {
                 int d = 0;
                 int b;
                 int c;
-                while(d == 0){//selecting member of moder
-                    b = random(1, 2);
-                    if(b == 1){
-                        for(int i = 0; i < Members.size(); i++){
-                            if(Members.at(i).getstatus() == 1){
-                                d = 1;
+                int k = 0;
+                for(int i = 0; i < Members.size(); i++){
+                    if(Members.at(i).getstatus() == 1){
+                        k = 1;//online moderator
+                    }
+                }
+                for(int i = 0; i < Moderators.size(); i++){
+                    if(Moderators.at(i).getstatus() == 1){
+                        k = 1;//online moderator
+                    }
+                }
+                if(k == 1) {
+                    while (d == 0) {//selecting member of moder
+                        b = random(1, 2);
+                        if (b == 1) {
+                            for (int i = 0; i < Members.size(); i++) {
+                                if (Members.at(i).getstatus() == 1) {
+                                    d = 1;
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < Moderators.size(); i++) {
+                                if (Moderators.at(i).getstatus() == 1) {
+                                    d = 1;
+                                }
                             }
                         }
-                    }else{
-                        for(int i = 0; i < Moderators.size(); i++){
-                            if(Moderators.at(i).getstatus() == 1){
-                                d = 1;
+
+                    }
+                    d = 0;
+                    if (b == 1) {//banning
+                        Member m;
+                        m.setstatus(2);
+                        while (m.getstatus() != 1) {
+                            c = random(0, Members.size() - 1);
+                            m = Members.at(c);
+                        }
+                        Members.at(c).setstatus(3);
+                        std::cout << Members.at(c).getlogin();
+                    } else {
+                        Moderator moder(none);
+                        moder.setstatus(2);
+                        while (moder.getstatus() != 1) {
+                            c = random(0, Moderators.size() - 1);
+                            moder = Moderators.at(c);
+                        }
+                        Moderators.at(c).setstatus(3);
+                        std::cout << Moderators.at(c).getlogin();
+                    }
+                    while (d == 0) {//selecting member of moder
+                        b = random(1, 2);
+                        if (b == 1) {
+                            for (int i = 0; i < Members.size(); i++) {
+                                if (Members.at(i).getstatus() == 1) {
+                                    d = 1;
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < Moderators.size(); i++) {
+                                if (Moderators.at(i).getstatus() == 1) {
+                                    d = 1;
+                                }
                             }
                         }
                     }
 
-                }
-                d = 0;
-                if(b == 1){//banning
-                    Member m;
-                    m.setstatus(2);
-                    while(m.getstatus() != 1){
-                        c = random(0, Members.size() - 1);
-                        m = Members.at(c);
-                    }
-                    Members.at(c).setstatus(3);
-                }else{
-                    Moderator moder(none);
-                    moder.setstatus(2);
-                    while(moder.getstatus() != 1) {
-                        c = random(0, Moderators.size() - 1);
-                        moder = Moderators.at(c);
-                    }
-                    Moderators.at(c).setstatus(3);
-                }
-                while(d == 0){//selecting member of moder
-                    b = random(1, 2);
-                    if(b == 1){
-                        for(int i = 0; i < Members.size(); i++){
-                            if(Members.at(i).getstatus() == 1){
-                                d = 1;
-                            }
+                    d = 0;
+                    if (b == 1) {//making new troll
+                        Member m;
+                        m.setstatus(2);
+                        while (m.getstatus() != 1) {
+                            c = random(0, Members.size() - 1);
+                            m = Members.at(c);
                         }
-                    }else{
-                        for(int i = 0; i < Moderators.size(); i++){
-                            if(Moderators.at(i).getstatus() == 1){
-                                d = 1;
-                            }
+                        maketroll(Members.at(c));
+                    } else {
+                        Moderator moder(none);
+                        moder.setstatus(2);
+                        while (moder.getstatus() != 1) {
+                            c = random(0, Moderators.size() - 1);
+                            moder = Moderators.at(c);
                         }
-                    }
+                        maketroll(Moderators.at(c));
+                    }//end making new troll
                 }
-                d = 0;
-                if(b == 1){//making new troll
-                    Member m;
-                    m.setstatus(2);
-                    while(m.getstatus() != 1){
-                        c = random(0, Members.size() - 1);
-                        m = Members.at(c);
-                    }
-                    maketroll(Members.at(c));
-                }else{
-                    Moderator moder(none);
-                    moder.setstatus(2);
-                    while(moder.getstatus() != 1) {
-                        c = random(0, Moderators.size() - 1);
-                        moder = Moderators.at(c);
-                    }
-                    maketroll(Moderators.at(c));
-                }
+
+
+//                std::cout << "\nNew moderator: ";
                 //starting making new moder
                 int z = 0;//finding online member
                 for(int i = 0; i < Moderators.size(); i++){
@@ -339,12 +352,67 @@ namespace forum {
                             c = random(0, Members.size() - 1);
                             m = Members.at(c);
                         }
+                        std::cout << "\nNew moderator: " << Members.at(c).getlogin();
                         makemoder(Members.at(c));
                     }
                 }//end makeing new moder
+
+            }std::cout << std::endl;
+        }
+        //new messages
+        for(int i = 0; i < Members.size(); i++){//for members
+            if(Members.at(i).getstatus() == 1){
+                Members.at(i).setmessages(random(1, 10));
             }
         }
-        std::cout << mind << " - " << thick << "\n";
+        for(int i = 0; i < Moderators.size(); i++){//for moderators
+            if(Moderators.at(i).getstatus() == 1){
+                Moderators.at(i).setmessages(random(1, 10));
+            }
+        }
+        for(int i = 0; i < Trolls.size(); i++){//for trolls
+            if(Trolls.at(i).getstatus() == 1){
+                Trolls.at(i).setmessages(random(1, 10));
+            }
+        }
+
+        //printing the most number of messages of users
+        std::cout << "\n..................................\nThe best Member: ";
+        int d = 0;//flag
+        int s = -1;//index of the best
+        for(int i = 0; i < Members.size(); i++){
+            if(Members.at(i).getmessages() >= d){
+                s = i;
+                d = Members.at(i).getmessages();
+            }
+        }
+        if(s != -1){
+            std::cout << Members.at(s).getlogin() << " - " << Members.at(s).getmessages();
+        }
+        std::cout << "\nThe best Moderator: ";
+        d = 0; s = -1;
+        for(int i = 0; i < Moderators.size(); i++){//Moderators
+            if(Moderators.at(i).getmessages() >= d){
+                s = i;
+                d = Moderators.at(i).getmessages();
+            }
+        }
+        if(s != -1){
+            std::cout << Moderators.at(s).getlogin() << " - " << Moderators.at(s).getmessages();
+        }
+        std::cout << "\nThe best Troll: ";
+        d = 0; s = -1;
+        for(int i = 0; i < Trolls.size(); i++){//trolls
+            if(Trolls.at(i).getmessages() >= d){
+                s = i;
+                d = Trolls.at(i).getmessages();
+            }
+        }
+        if(s != -1){
+            std::cout << Trolls.at(s).getlogin() << " - " << Trolls.at(s).getmessages();
+        }
+        std::cout << "\n.................................."<< std::endl;
+        //ending printing of the best users
     }
     void Section::ModelResult(){
         int mind = 0;
@@ -359,6 +427,7 @@ namespace forum {
                 thick += (1 / Trolls.at(i).getthick());
             }
         }
+        std::cout << mind << " - " << thick << "\n";
         if((float)mind > thick){
             std::cout << "Moderator are smarter than trolls.";
         }else{
@@ -431,7 +500,7 @@ namespace forum {
     }
     void Section::makemember(Troll& troll){
         Member mem(troll);
-        delmoderator( mem.getlogin());
+        deltroll( mem.getlogin());
         Members.push_back(mem);
     }
     void Section::makemoder(Member& mem){
@@ -497,37 +566,37 @@ namespace forum {
         for(int i = 0; i < section.Members.size(); i ++){
             o << i + 1 << ") " << section.Members.at(i).getlogin() << "(";
             if(section.Members.at(i).getstatus() == 1){
-                o << "online";
+                o << "online ";
             }else if(section.Members.at(i).getstatus() == 2){
-                o << "offline";
+                o << "offline ";
             }else{
-                o << "banned";
+                o << "banned ";
             }
-            o << "); ";
+            o << section.Members.at(i).getmessages() <<  "); ";
         }
         std:: cout << std::endl << "Moderators: ";
         for(int i = 0; i < section.Moderators.size(); i ++){
             o << i + 1 << ") " << section.Moderators.at(i).getlogin() << "(";
             if(section.Moderators.at(i).getstatus() == 1){
-                o << "online";
+                o << "online ";
             }else if(section.Moderators.at(i).getstatus() == 2){
-                o << "offline";
+                o << "offline ";
             }else{
-                o << "banned";
+                o << "banned ";
             }
-            o << ", ." << section.Moderators.at(i).getmind() << "); ";
+            o << section.Moderators.at(i).getmessages()<< ", ." << section.Moderators.at(i).getmind() << "); ";
         }
         std:: cout << std::endl << "Trolls: ";
         for(int i = 0; i < section.Trolls.size(); i ++){
             o << i + 1 << ") " << section.Trolls.at(i).getlogin() << "(";
             if(section.Trolls.at(i).getstatus() == 1){
-                o << "online";
+                o << "online ";
             }else if(section.Trolls.at(i).getstatus() == 2){
-                o << "offline";
+                o << "offline ";
             }else{
-                o << "banned";
+                o << "banned ";
             }
-            o << ", #" << section.Trolls.at(i).getthick() << "); ";
+            o << section.Trolls.at(i).getmessages()<< ", #" << section.Trolls.at(i).getthick() << "); ";
         }
         o << "\n";
         return o;
@@ -568,16 +637,3 @@ namespace forum {
         return false;
     }
 }
-
-
-
-
-/*
-Member& Member::operator= (const Member& mem){
-    login = mem.login;
-    TimeReg = mem.TimeReg;
-    messages = mem.messages;
-    status = mem.status;
-    section = mem.section;
-    return *this;
-}*/

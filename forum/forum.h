@@ -79,7 +79,6 @@ namespace forum{
     public:
         Section(const std::string& sname);
         //Modeling
-        void PerspectiveUsers();
         void ModelOne();
         void ModelResult();
         Troll& successful_troll();//done
@@ -123,7 +122,7 @@ namespace forum{
         void addMember(Member& member, Section& section);
         void addSection(Section& section);
         //sow
-        void showMembers();
+//        void showMembers();
         void showSections();
         //additional
         bool istherename(std::string str);
